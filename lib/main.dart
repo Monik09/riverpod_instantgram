@@ -7,6 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:instant_gram/state/auth/backend/authenticator.dart';
 import 'package:instant_gram/state/auth/providers/auth_state_provider.dart';
 import 'package:instant_gram/state/auth/providers/is_logged_in_provider.dart';
+import 'package:instant_gram/state/providers/is_loading_provider.dart';
+import 'package:instant_gram/views/components/loading/loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +26,18 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.dark,
       home: Consumer(builder: ((context, ref, child) {
+       
+        ref.listen(
+          isLoadingProvider,
+          (_, isLoading) {
+            if (isLoading) {
+              return LoadingScreen.instance().show(context: context);
+            } else {
+              return LoadingScreen.instance().hide();
+            }
+          },
+        );
+
         bool isLoggedIn = ref.watch(isLoggedInProvider);
         return isLoggedIn ? MainView() : LoginView();
       })),
